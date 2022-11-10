@@ -1,31 +1,42 @@
 #include "log.h"
-
-const int logBuffLen = 64 * 1024
+#include "define.h"
+const int logBuffLen = 64 * 1024;
 static char _logBuff[logBuffLen] = { '\0' };
-CLog:CLog(const char* pFileName, const char* pDir,  int loglevel,int logSize)
+CLog::CLog(const char* pFileName, const char* pDir,  int loglevel,int logSize /* = 10240*/ )
 {
 	m_fd = -1;
 	m_fileIdx = 1;
-	m_logMaxSize = 1024 * 1024;
+	m_logMaxSize = logSize;
 	m_logLevel = loglevel;
 	memset(m_Dir, 0, sizeof(m_Dir));
 	memset(m_FileFullName, 0, sizeof(m_FileFullName));
 	size_t nLen = strlen(pDir);
-	memcat(m_FileFullName, pDir);
-	memcat(m_FileFullName + nLen, pFileName);
-	memcat(m_fileName, pFileName);
+	strcat(m_FileFullName, pDir);
+	createDir();
+	strcat(m_FileFullName, "/");
+	strcat(m_FileFullName + nLen, pFileName);
+	strcat(m_fileName, pFileName);
 	m_maxFileNums = MAX_LOG_FILE_NUMS;
 	updateFileIndex();
 }
 
-CLog:~CLog()
+CLog::~CLog()
 {
 	closeFile();
-	m_Dir = '\0';
-	m_fileName = '\0';
+	PRINT_FONT_WHI
+	printf("");
 }
 
-void CLog:closeFile()
+void CLog::createDir()
+{
+	int ret = access(m_FileFullName, F_OK | W_OK);
+	if (ret != 0)
+	{
+		mkdir(m_FileFullName, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	}
+}
+
+void CLog::closeFile()
 {
 	if (m_fd >= 0)
 	{
@@ -35,19 +46,18 @@ void CLog:closeFile()
 	m_fd = -1;
 }
 
-bool CLog:checkFileExiste()
+bool CLog::checkFileExiste()
 {
-	return (access(m_FileFullName, F_OK | W_OK) == 0)
+	return (access(m_FileFullName, F_OK | W_OK) == 0);
 }
 
-bool CLog:checkFileSize()
+bool CLog::checkFileSize()
 {
-	return (m_curSize >= m_logMaxSize)
+	return (m_curSize >= m_logMaxSize);
 }
 
-void CLog:bakCurFile()
+void CLog::bakCurFile()
 {
-	if(m_fd < 0) { return; }
 	if(!checkFileExiste()){ return; }
 
 	struct timeval tv;
@@ -55,14 +65,14 @@ void CLog:bakCurFile()
 	struct tm* pTm = localtime(&tv.tv_sec);
 
 	char newFileBakName[MAX_FULL_PATH_LEN] = {0};
-	snprintf(newFileBakName, sizeof(newFileBakName), "%s_%d%d%d%d%d%d", m_FileFullName, ,pTm->tm_year + 1900, 
-		pTm->tm_mon + 1, pTm->tm_mday, pTm->tm_hour, pTm->tm_min, m_fileIdx);
+	snprintf(newFileBakName, sizeof(newFileBakName), "%s_%d%d%d_%d", m_FileFullName ,pTm->tm_year + 1900, 
+		pTm->tm_mon + 1, pTm->tm_mday, m_fileIdx);
 	rename(m_FileFullName, newFileBakName);
 
 	m_fileIdx++;
 }
 
-void CLog:updateFileIndex()
+void CLog::updateFileIndex()
 {	
 	char fullBakName[MAX_FULL_PATH_LEN]  = {0};
 	struct timeval tv;
@@ -80,33 +90,49 @@ void CLog:updateFileIndex()
 	}
 }
 
-bool CLog:createFile()
+bool CLog::createFile()
 {
 	if(m_fd > 0)
 	{
 		return false;
 	}
-	m_fd = open(m_fullName, O_WRONLY | O_APPEND | O_CREAT , S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	m_fd = open(m_FileFullName, O_WRONLY | O_APPEND | O_CREAT , S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (m_fd >= 0)
-	{
+	{	
+		struct stat fileInfo;
+		m_curSize = 0;
+		if (stat(m_FileFullName, &fileInfo) == 0)
+		{
+			m_curSize = fileInfo.st_size;
+		}
 		return true;
 	}
 	return false;
 }
 
-int CLog:genFileHead(struct tm* pTm, const struct timeval& tv)
+int CLog::genFileHead(struct tm* pTm, const struct timeval& tv, int logLevel)
 {
-	int nLen = snprintf(logHeadBuff, headBuffLen, "%d-%02d-%02d %02d:%02d:%02d.%03d|%s", (pTm->tm_year + 1900), (pTm->tm_mon + 1), pTm->tm_mday,
-		    pTm->tm_hour, pTm->tm_min, pTm->tm_sec, (int)(tv.tv_usec / 1000), LogLevelStr[m_logLevel] ? "INFO");
+	int nLen = snprintf(_logBuff, logBuffLen, "%d-%02d-%02d %02d:%02d:%02d.%03d %s: ", (pTm->tm_year + 1900), (pTm->tm_mon + 1), pTm->tm_mday,
+		    pTm->tm_hour, pTm->tm_min, pTm->tm_sec, (int)(tv.tv_usec / 1000), LogLevelStr[logLevel] ? LogLevelStr[logLevel] : "INFO");
 
 	return nLen;
 }
 
-int CLog:writeFile(const char* pFormat, ...)
+int CLog::getBuffSize()
 {
+	return m_curSize;
+}
+
+int CLog::writeFile(int logLevel, const char* pFormat, ...)
+{
+	if(logLevel > m_logLevel)
+	{
+		return 0;
+	}
 	if(m_fd < 0 ||  checkFileSize() || !checkFileExiste())
 	{
 		closeFile();
+		bakCurFile();
 		createFile();
 	}
 
@@ -114,13 +140,16 @@ int CLog:writeFile(const char* pFormat, ...)
 	gettimeofday(&tv, NULL);
 	struct tm* pTm = localtime(&tv.tv_sec);
 
-	int headLen = genFileHead(pTm, tv, )
+	int headLen = genFileHead(pTm, tv, logLevel);
 	va_list valp;
 	va_start(valp, pFormat);
 	int logLen = vsnprintf(_logBuff + headLen, logBuffLen - headLen - 1, pFormat, valp);
 	va_end(valp);
 
-	_logBuff[logLen + headLen] = '\n';
-    logLen = write(m_fd, logBuff, wLen + 1);
+	logLen += headLen;
+	_logBuff[logLen] = '\n';
+    logLen = write(m_fd, _logBuff, logLen + 1);
+	printf("%s", _logBuff);
+	m_curSize += logLen;
 	return logLen;
 }
