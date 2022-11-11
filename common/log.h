@@ -8,7 +8,7 @@
 #define LOG_LIB_H
 
 #include "define.h"
-
+#include "global.h"
 
 #define MAX_LOG_FILE_NUMS (100)
 enum LogLevel {
@@ -27,30 +27,37 @@ static const char* LogLevelStr[] = {
 };
 
 
+
 #define INIT_LOG(log_name, log_path, log_level)  \
-CLog* pLog = new CLog(log_name, log_path, log_level);
+pGlobalLog = new CLog(log_name, log_path, log_level);
 
 
-#define DESTROY_LOG \
-delete pLog;
+#define DESTROY_LOG() \
+delete pGlobalLog;
 
 #define DEBUG(fmt, args...) \
 PRINT_FONT_WHI \
-pLog->writeFile(LogLevel::debug, fmt, ## args);
+if(pGlobalLog) { \
+pGlobalLog->writeFile(LogLevel::debug, fmt, ## args);}
+
 
 #define INFO(fmt, args...) \
 PRINT_FONT_WHI \
-pLog->writeFile(LogLevel::info, fmt, ## args);
+if(pGlobalLog) { \
+pGlobalLog->writeFile(LogLevel::info, fmt, ## args);}
 
 #define WARN(fmt, args...) \
 PRINT_FONT_YEL \
-pLog->writeFile(LogLevel::warn, fmt, ## args);
+if(pGlobalLog) { \
+pGlobalLog->writeFile(LogLevel::warn, fmt, ## args);}
 
 #define ERROR(fmt, args...) \
 PRINT_FONT_RED \
-pLog->writeFile(LogLevel::error, fmt, ## args);
+if(pGlobalLog) { \
+pGlobalLog->writeFile(LogLevel::error, fmt, ## args);}
 
-#define GETLOGSIZE  pLog->getBuffSize()
+#define GETLOGSIZE \
+pGlobalLog->getBuffSize()
 
 
 class CLog

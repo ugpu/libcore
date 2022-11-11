@@ -6,6 +6,7 @@
 #pragma once
 #ifndef DEFINE_LIB_H
 #define DEFINE_LIB_H
+
 #include <string>
 #include <string.h>
 #include <unordered_map>
@@ -24,7 +25,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-
 #define MAX_FILE_NAME_LEN (255)
 #define MAX_FULL_PATH_LEN (4096)
 
@@ -37,3 +37,4 @@
 #define PRINT_FONT_WHI  printf("\033[37m"); //white
 
 #endif
+
