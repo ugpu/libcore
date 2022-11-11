@@ -20,7 +20,7 @@ SRC := $(wildcard *.cpp $(COMMON)/*.cpp)
 OBJFILE := $(patsubst %.cpp,  $(OBJDIR)/%.o, $(notdir ${SRC}))
 
 COMPILE=g++ $(COMPILE_ARGS) "$(OBJDIR)/$(*F).o" -w "$<"
-LINK=g++ $(LIBDIR) $(LINK_ARGS) "$(EXEFILE)" $(OBJFILE) $(OBJFILE_Z)
+LINK=g++ $(LIBDIR) $(LINK_ARGS) "$(EXEFILE)" $(OBJFILE) $(OBJFILE_Z) $(LIB)
 
 # Pattern rules
 $(OBJDIR)/%.o : %.cpp

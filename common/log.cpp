@@ -1,5 +1,14 @@
 #include "log.h"
-#include "define.h"
+
+static const char* LogLevelStr[] = {
+	"",
+	"[ERROR]",
+	"[WARN]",
+	"[INFO]",
+	"[DEBUG]",
+};
+
+
 const int logBuffLen = 64 * 1024;
 static char _logBuff[logBuffLen] = { '\0' };
 CLog::CLog(const char* pFileName, const char* pDir,  int loglevel,int logSize /* = 10240*/ )
@@ -58,7 +67,7 @@ bool CLog::checkFileSize()
 
 void CLog::bakCurFile()
 {
-	if(!checkFileExiste()){ return; }
+	if(!checkFileExiste()) return; 
 
 	struct timeval tv;
 	gettimeofday(&tv, NULL);

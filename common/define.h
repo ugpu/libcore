@@ -3,9 +3,10 @@
 	date: 09/11/2022
 	description: .....
 */
-#pragma once
-#ifndef DEFINE_LIB_H
-#define DEFINE_LIB_H
+
+#ifndef DEFINE_H
+#define DEFINE_H
+
 
 #include <string>
 #include <string.h>
@@ -24,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+
 
 #define MAX_FILE_NAME_LEN (255)
 #define MAX_FULL_PATH_LEN (4096)

@@ -3,12 +3,11 @@
 	date: 09/11/2022
 	description: log
 */
-#pragma once
-#ifndef LOG_LIB_H
-#define LOG_LIB_H
+
+#ifndef CLOG_H
+#define CLOG_H
 
 #include "define.h"
-#include "global.h"
 
 #define MAX_LOG_FILE_NUMS (100)
 enum LogLevel {
@@ -17,48 +16,6 @@ enum LogLevel {
 	info,
 	debug,
 };
-
-static const char* LogLevelStr[] = {
-	"",
-	"[ERROR]",
-	"[WARN]",
-	"[INFO]",
-	"[DEBUG]",
-};
-
-
-
-#define INIT_LOG(log_name, log_path, log_level)  \
-pGlobalLog = new CLog(log_name, log_path, log_level);
-
-
-#define DESTROY_LOG() \
-delete pGlobalLog;
-
-#define DEBUG(fmt, args...) \
-PRINT_FONT_WHI \
-if(pGlobalLog) { \
-pGlobalLog->writeFile(LogLevel::debug, fmt, ## args);}
-
-
-#define INFO(fmt, args...) \
-PRINT_FONT_WHI \
-if(pGlobalLog) { \
-pGlobalLog->writeFile(LogLevel::info, fmt, ## args);}
-
-#define WARN(fmt, args...) \
-PRINT_FONT_YEL \
-if(pGlobalLog) { \
-pGlobalLog->writeFile(LogLevel::warn, fmt, ## args);}
-
-#define ERROR(fmt, args...) \
-PRINT_FONT_RED \
-if(pGlobalLog) { \
-pGlobalLog->writeFile(LogLevel::error, fmt, ## args);}
-
-#define GETLOGSIZE \
-pGlobalLog->getBuffSize()
-
 
 class CLog
 {
@@ -96,5 +53,8 @@ private:
 	int   m_fileIdx;
 	char  m_FileFullName[MAX_FULL_PATH_LEN];
 };
+
+
+
 
 #endif
