@@ -1,3 +1,7 @@
+### 正在添加和更新中.... 或许你可以点击下star？ <br/>
+### Adding and updating... Maybe you can click star?<br/>
+
+
 # server_frame
  base lib for linux
  ----
