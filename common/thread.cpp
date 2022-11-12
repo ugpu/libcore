@@ -1,7 +1,6 @@
-#include "thread.h"
-#include "global.h"
+#include "Thread.h"
+#include "log.h"
 #include <pthread.h>
-
 CThread::CThread() : m_pId(0)
 {
 
@@ -26,18 +25,18 @@ int CThread::detach(pthread_t pid)
 
 int CThread::join(pthread_t pid, void** ret_status)
 {
-	int ret = pthread_join(m_pId, ret_status);
+	int ret = pthread_join(pid, ret_status);
 	if (ret != 0)
 	{
 		//dosomething... throw..error?
-        ERROR("join thread failed! pid = %d", m_pId);
+        ERROR("join thread failed! pid = %d", pid);
 	}
 	return ret;
 }
 
 int CThread::cancel(pthread_t pid)
 {
-	int ret = pthread_cancel(m_pId);
+	int ret = pthread_cancel(pid);
 	if (ret != 0)
 	{
 		//dosomething... throw..error?
@@ -46,7 +45,7 @@ int CThread::cancel(pthread_t pid)
 	return ret;
 }
 
-void* CThread::call_func_run(void* pObj)
+void* CThread::start_fun(void* pObj)
 {
     if(!pObj)
     {
@@ -60,9 +59,8 @@ void* CThread::call_func_run(void* pObj)
 }
 
 int CThread::start()
-{	
-	DEBUG("thread start!!!!!")
-	int ret = pthread_create(&m_pId, NULL, call_func_run, (void*)this);
+{
+	int ret = pthread_create(&m_pId, NULL, start_fun, (void*)this);
 	if (ret != 0)
 	{
 		ERROR("start failed! pid = %d", m_pId);
