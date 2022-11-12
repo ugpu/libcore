@@ -10,18 +10,6 @@
 
 #include <string>
 #include <string.h>
-#include <unordered_map>
-#include <stdlib.h>
-#include <errno.h>
-#include <map>
-#include <vector>
-#include <iostream>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <time.h>
-#include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -29,6 +17,7 @@
 
 #define MAX_FILE_NAME_LEN (255)
 #define MAX_FULL_PATH_LEN (4096)
+#define MAX_LOG_FILE_NUMS (100)
 
 #define PRINT_FONT_BLA  printf("\033[30m"); //back
 #define PRINT_FONT_RED  printf("\033[31m"); //red
@@ -37,6 +26,20 @@
 #define PRINT_FONT_BLU  printf("\033[34m"); //blue
 #define PRINT_FONT_PUR  printf("\033[35m"); //pup
 #define PRINT_FONT_WHI  printf("\033[37m"); //white
+
+#define LOG_FILE_NAME ("log.log")
+#define LOG_FILE_PATH ("../log")
+
+/*
+	enum LogLevel {
+	error = 1,
+	warn,
+	info,
+	debug,
+};
+*/
+#define LOG_FILE_LEVEL (4)
+
 
 #endif
 

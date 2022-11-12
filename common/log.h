@@ -7,15 +7,20 @@
 #ifndef CLOG_H
 #define CLOG_H
 
+#include <string>
+#include <string.h>
+#include <iostream>
+#include <unistd.h>
+#include <fcntl.h>
+#include <time.h>
+#include <sys/time.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "define.h"
 
-#define MAX_LOG_FILE_NUMS (100)
-enum LogLevel {
-	error = 1,
-	warn,
-	info,
-	debug,
-};
+
+
 
 class CLog
 {
@@ -24,6 +29,7 @@ public:
 	CLog(const char* pFileName, const char* pDir,  int loglevel,int logSize = 1024 * 1024 * 1024);
 	~CLog();
 
+	static CLog* inputFile();
 public:
 	int writeFile(int logLevel, const char* pFormat, ...);
 	int getBuffSize();
@@ -53,8 +59,6 @@ private:
 	int   m_fileIdx;
 	char  m_FileFullName[MAX_FULL_PATH_LEN];
 };
-
-
 
 
 #endif

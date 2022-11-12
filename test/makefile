@@ -3,14 +3,14 @@ RM=rm
 MKDIR=mkdir
 
 APP=test
-LIB=-lpthread -lrt -ldl
+LIB=-lpthread  -lrt -ldl 
 
 OBJDIR=../_obj/$(APP)
 EXEDIR=../bin
 INCDIR=-I../common
 COMMON=../common
-COMPILE_ARGS=-c -o
-LINK_ARGS=-o
+COMPILE_ARGS= -std=c++11 -c -o 
+LINK_ARGS= -std=c++11 -o 
 LIBDIR=
 PLATS=debug release
 
@@ -33,7 +33,7 @@ $(OBJDIR)/%.o : $(COMMON)/%.cpp
 all: $(EXEFILE)
 release: $(EXEFILE)
 debug: 
-	$(MAKE) $(all) COMPILE_ARGS="-g -c -o" LINK_ARGS="-g -o"
+	$(MAKE) $(all) COMPILE_ARGS="-g -std=c++11 -c -o" LINK_ARGS="-g -o"
 
 $(EXEFILE): $(OBJDIR) $(OBJFILE) $(OBJFILE_Z)
 	$(MKDIR) -p $(EXEDIR)

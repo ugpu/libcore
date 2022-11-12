@@ -1,14 +1,14 @@
 /*
 	auth: ugpu
 	date: 11/11/2022
-	description: thread demo
+	description: thread api
 */
-#pragma once
 
 #ifndef CTHREAD_H
 #define CTHREAD_H
 
-#include "define.h"
+#include "global.h"
+
 class CThread
 {
 
@@ -19,8 +19,10 @@ public:
 public:
 	// exit if success
 	int cancel(pthread_t pid);
+
     //wait thread exit
     int join(pthread_t pid, void** ret_status);
+
     //detach thread
 	int detach(pthread_t pid);
 
@@ -38,7 +40,7 @@ private:
     CThread& operator =(const CThread&);
 
 private:
-    static void* start_fun(void* pObj);
+    static void* call_func_run(void* pObj);
 
 private:
     pthread_t    m_pId; //thrad id
@@ -46,4 +48,4 @@ private:
 };
 
 
-#endif //CORE_THREAD_H
+#endif //CTHREAD_H

@@ -1,4 +1,13 @@
 #include "log.h"
+#include "define.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <time.h>
+#include <sys/time.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 static const char* LogLevelStr[] = {
 	"",
@@ -7,6 +16,8 @@ static const char* LogLevelStr[] = {
 	"[INFO]",
 	"[DEBUG]",
 };
+
+
 
 
 const int logBuffLen = 64 * 1024;
@@ -130,6 +141,12 @@ int CLog::genFileHead(struct tm* pTm, const struct timeval& tv, int logLevel)
 int CLog::getBuffSize()
 {
 	return m_curSize;
+}
+
+CLog* CLog::inputFile()
+{
+	static CLog g_log(LOG_FILE_NAME, LOG_FILE_PATH, LOG_FILE_LEVEL);
+	return &g_log;
 }
 
 int CLog::writeFile(int logLevel, const char* pFormat, ...)

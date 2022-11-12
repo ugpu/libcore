@@ -14,24 +14,31 @@ std::string rand_str(const int len)
 }
 
 
-
 int main(int argc, char **argv)
 {   
-    INIT_LOG("log.log", "../log", LogLevel::debug);
-    //LOG TEST
+    
+    INFO_LOG("#########   test start  #####");
+    INFO_LOG("");
+    INFO_LOG("");
+    INFO_LOG("");
     std::string str = rand_str(512);
     
-    for(int i =0; i < 0; ++i)
+    for(int i =0; i < 3; ++i)
     {
-        ERROR(str.c_str());
-        INFO(str.c_str());
-        WARN(str.c_str());
-        DEBUG("####### log print finish ! print count = %d #######", i+1);
+        ERROR_LOG(str.c_str());
+        INFO_LOG(str.c_str());
+        WARN_LOG(str.c_str());
+        DEBUG_LOG("####### log print finish ! print count = %d #######", i+1);
     }
+
     void* pStatus;
     CThread* pThread = new CThread();
     pThread->start();
     pThread->join(0, &pStatus);
-    //DESTROY_LOG
+
+    INFO_LOG("");
+    INFO_LOG("");
+    INFO_LOG("");
+    INFO_LOG("#########   test end  #####");
     return 0;
 }
