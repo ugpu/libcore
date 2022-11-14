@@ -24,11 +24,15 @@
 #define PRINT_FONT_GRE  printf("\033[32m"); //green
 #define PRINT_FONT_YEL  printf("\033[33m"); //yellow
 #define PRINT_FONT_BLU  printf("\033[34m"); //blue
-#define PRINT_FONT_PUR  printf("\033[35m"); //pup
+#define PRINT_FONT_PUR  printf("\033[35m"); //purple
 #define PRINT_FONT_WHI  printf("\033[37m"); //white
 
 #define LOG_FILE_NAME ("log.log")
 #define LOG_FILE_PATH ("../log")
+
+
+#define SVR_CONN_MAX_LISTEN_NUM (1024 * 10)
+#define SVR_CONN_MAX_MSG_NUM (1024 * 10)
 
 /*
 	enum LogLevel {

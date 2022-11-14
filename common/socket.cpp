@@ -8,11 +8,6 @@ CSocket::CSocket()
 	m_fd = -1;
 }
 
-CSocket::CSocket(const char* ip, const unsigned short port)
-{
-
-}
-
 
 CSocket::~CSocket()
 {
@@ -50,7 +45,6 @@ int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */)
 	}
 	
 	return 0;
-
 }
 
 

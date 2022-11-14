@@ -11,8 +11,6 @@ class CSocket
 {
 public:
     CSocket();
-	CSocket(const char* ip, const unsigned short port);
-
 	//common base use virtual,  not memery leak. 
 	virtual ~CSocket();
 	
