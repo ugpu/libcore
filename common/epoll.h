@@ -4,15 +4,12 @@
 	description: epoll api
 */
 
-
- #include "global.h"
-
 #ifndef CEPOLL_H
 #define CEPOLL_H
 
+#include "global.h"
 
 struct epoll_event;
-
 class CEpoll
 {
 public:
@@ -37,3 +34,5 @@ private:
     int m_fd;
 
 };
+
+#endif

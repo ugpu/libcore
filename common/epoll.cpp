@@ -48,7 +48,7 @@ int CEpoll::removeListenter(int fd)
     ev.events = 0;
 	if (::epoll_ctl(m_fd, EPOLL_CTL_DEL, fd, &ev) == -1)  // 删除监听
 	{
-		ERROR_LOG("removeListenter error!")
+		ERROR_LOG("removeListenter error!");
         return -1;
 	}
 	return 0;

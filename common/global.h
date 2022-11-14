@@ -15,6 +15,10 @@
 #include <sys/stat.h>
 #include <sys/epoll.h>
 #include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 #include <fcntl.h>
 #include <time.h>
 #include <sys/time.h>

@@ -26,7 +26,7 @@ CSocket::~CSocket()
 }
 
 
-int CSocket::init(const char* ip, int port, int type = SOCK_STREAM)
+int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */)
 {
 	if(!ip)
 	{
@@ -39,7 +39,7 @@ int CSocket::init(const char* ip, int port, int type = SOCK_STREAM)
 
 	m_sType = type;
 	m_port  = port;
-	strcat(m_ip, ip, strlen(ip));
+	strcat(m_ip, ip);
 
 
 	m_fd = socket(AF_INET, m_sType, 0);
@@ -56,42 +56,74 @@ int CSocket::init(const char* ip, int port, int type = SOCK_STREAM)
 
 int CSocket::bind()
 {
-	if (m_ip[0] == "\0" || m_port < 1)
+	if (m_fd < 0) return -1;
+	if (m_ip[0] == '\0' || m_port < 1) return -1;
+
+	struct sockaddr_in _addr;
+	memset(&_addr, 0, sizeof(_addr));
+	_addr.sin_family = AF_INET;
+	_addr.sin_port = htons(m_port);
+	if (inet_aton(m_ip, &_addr.sin_addr) == 0)
+	{
+		return -2;
+	}
+	
+	if (::bind(m_fd, (struct sockaddr*)&_addr, sizeof(_addr)) == -1)
+	{
+		return -3;
+	}
+	
+	return 0;
+}
+
+int CSocket::listen(int num)
+{
+	if (num < 1) return -1;
+	
+	if (::listen(m_fd, num) == -1)
+	{
+		return -2;
+	}
+	
+	return 0;
+}
+
+int CSocket::connect()
+{
+	struct sockaddr_in clientAddr;
+	memset(&clientAddr, 0, sizeof(clientAddr));
+	clientAddr.sin_family = AF_INET;
+	clientAddr.sin_port = htons(m_port);
+	if (::connect(m_fd, (struct sockaddr*)&clientAddr, sizeof(clientAddr)) == -1)
 	{
 		return -1;
 	}
-
-	struct sockaddr_in servAddr;
-	memset(&servAddr, 0, sizeof(servAddr));
-	servAddr.sin_family = AF_INET;
-	servAddr.sin_port = htons(m_port);
-	if (inet_aton(m_ip, &servAddr.sin_addr) == 0)
-	{
-		ReleaseErrorLog("bind convert ip = %s failed", m_ip);
-		return InValidIp;
-	}
 	
-	if (::bind(m_fd, (struct sockaddr*)&servAddr, sizeof(servAddr)) == -1)
-	{
-		ReleaseErrorLog("bind ip = %s, port = %d, error = %d, info = %s", m_ip, m_port, errno, strerror(errno));
-		return BindIpPortFailed;
-	}
-	
-	return Success;
+	return 0;
 }
 
 
-int CSocket::getFd() const
+int CSocket::setNoBlock(int fd /*=  -1 */)
+{
+	if(fd == -1)
+	{
+		fd = m_fd;
+	}
+	int flag = fcntl(fd, F_GETFL, 0);
+	return fcntl(fd, F_SETFL, flag | O_NONBLOCK);
+}
+
+int CSocket::getFD() const
 {
 	return m_fd;
 }
 
-const char* CSocket::getIp() const
+char* CSocket::getIP()
 {
 	return m_ip;
 }
 
-unsigned short CSocket::getPort() const
+int CSocket::getPort()
 {
-	return m_port;
+	return (int)m_port;
 }
