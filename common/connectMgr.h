@@ -16,12 +16,18 @@ public:
 	ConnectMgr(const char* ip, const int port);
 	~ConnectMgr();
 
+public:
+	int start();
 
+protected:
+	ConnectMgr();
 private:
 	int       m_status;
 	CSocket   m_socket;
 	int       m_maxMsgNum;
 	int       m_listernNum;
+	char      m_ip[128];
+	int       m_port;
 };
 
 #endif

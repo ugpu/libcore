@@ -21,6 +21,17 @@ CSocket::~CSocket()
 }
 
 
+int CSocket::setOpt(int opt_val , int& opt_ret)
+{
+	if(m_fd < 1)
+	{
+		return -1;
+	}
+
+	setsockopt(m_fd, SOL_SOCKET, opt_val, &opt_ret, sizeof(int));
+	return 0;
+}
+
 int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */)
 {
 	if(!ip)
@@ -43,6 +54,9 @@ int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */)
 		ERROR_LOG("init socket failed! ip = %s port = %d", ip, m_port);
 		return -1;
 	}
+
+	int val = 1;
+	this->setOpt(SO_REUSEADDR , val);
 	
 	return 0;
 }

@@ -25,6 +25,7 @@ public:
 	//no block. epoll et mode only suprt noBlock. default use;
 	int setNoBlock(int fd = -1);
 
+	int setOpt(int opt_val , int& opt_ret);
 
 	int getFD() const;
 	char* getIP();
