@@ -6,17 +6,22 @@
 
 
 #ifndef CCONECTMGR_H
-#ifdef  CCONECTMGR_H
+#define CCONECTMGR_H
 
+#include "socket.h"
 
 class ConnectMgr
 {
-
 public:
-	CConnectManager(const char* ip, const int port, ILogicHandler* logicHandler);
-	~CConnectManager();
+	ConnectMgr(const char* ip, const int port);
+	~ConnectMgr();
 
 
+private:
+	int       m_status;
+	CSocket   m_socket;
+	int       m_maxMsgNum;
+	int       m_listernNum;
 };
 
 #endif

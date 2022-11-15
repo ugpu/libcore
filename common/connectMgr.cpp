@@ -1,7 +1,7 @@
 #include "connectMgr.h"
 #include "define.h"
 
-CConnectManager::CConnectManager(const char* ip, const int port)
+ConnectMgr::ConnectMgr(const char* ip, const int port)
 {
     m_status     = -1;
     m_socket.init(ip, port);
@@ -10,7 +10,7 @@ CConnectManager::CConnectManager(const char* ip, const int port)
 }
 
 
-CConnectManager::~CConnectManager()
+ConnectMgr::~ConnectMgr()
 {
 
 }
