@@ -10,6 +10,7 @@
 
 #include "socket.h"
 #include "define.h"
+#include "epoll.h"
 
 class ConnectMgr
 {
@@ -20,7 +21,7 @@ public:
 public:
 	int start();
 
-	void run();
+	int run();
 
 	bool is_run();
 
