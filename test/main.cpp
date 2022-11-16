@@ -1,6 +1,6 @@
 #include "../common/global.h"
 #include "../common/thread.h"
-
+#include "../common/connectMgr.h"
 std::string rand_str(const int len)
 {
     std::string str;
@@ -40,5 +40,9 @@ int main(int argc, char **argv)
     INFO_LOG("");
     INFO_LOG("");
     INFO_LOG("#########   test end  #####");
+
+    ConnectMgr a("127.0.0.1", 10091);
+    a.start();
+    a.run();
     return 0;
 }
