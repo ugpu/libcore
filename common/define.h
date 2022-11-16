@@ -19,6 +19,8 @@
 #define MAX_FULL_PATH_LEN (4096)
 #define MAX_LOG_FILE_NUMS (100)
 
+#define DEFAULT_LISTEN_NUM (1024 * 10)
+#define MAX_LISTEN_EVENT_CNT (1024 * 10)
 #define PRINT_FONT_BLA  printf("\033[30m"); //back
 #define PRINT_FONT_RED  printf("\033[31m"); //red
 #define PRINT_FONT_GRE  printf("\033[32m"); //green

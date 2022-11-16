@@ -2,7 +2,7 @@
 #define GLOBAL_H
 
 #include "log.h"
-
+#include "define.h"
 #include <string>
 #include <string.h>
 #include <unordered_map>
