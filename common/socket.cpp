@@ -1,5 +1,5 @@
 #include "socket.h"
-
+#include <netinet/tcp.h>
 
 CSocket::CSocket()
 {
@@ -82,10 +82,10 @@ int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */, bool i
 int CSocket::accept(int & _fd)
 {
 	struct sockaddr_in client_addr;
-	int nLen = sizeof(peerAddr);
-	memset(&peerAddr, 0, nLen);
-	fd = ::accept(m_fd, (struct sockaddr*)&client_addr, &nLen);
-	if(fd < 0 )
+	socklen_t nLen = sizeof(client_addr);
+	memset(&client_addr, 0, nLen);
+	_fd = ::accept(m_fd, (struct sockaddr*)&client_addr, &nLen);
+	if(_fd < 0 )
 	{
 		return -1;
 	}
@@ -148,15 +148,20 @@ int CSocket::setNoBlock()
 	return fcntl(m_fd, F_SETFL, flag | O_NONBLOCK);
 }
 
+int CSocket::setNoBlock(int fd)
+{
+	int flag = fcntl(m_fd, F_GETFL, 0);
+	return fcntl(m_fd, F_SETFL, flag | O_NONBLOCK);
+}
+
 int CSocket::setNagle(int val)
 {
 	if (setsockopt(m_fd, IPPROTO_TCP, TCP_NODELAY, &val, sizeof(val)) == -1)
 	{
-		ReleaseErrorLog("set nagle, value = %d, error = %d, info = %s", val, errno, strerror(errno));
-		return SetNagleFailed;
+		return -1;
 	}
 	
-	return Success;
+	return 0;
 }
 
 

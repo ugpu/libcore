@@ -22,11 +22,13 @@ public:
 	int init(const char* ip, int port, int type = SOCK_STREAM, bool is_reuseaddr = true, bool is_nagale = false);
 
 	int bind();
+	int accept(int & _fd);
 	int listen(int num = DEFAULT_LISTEN_NUM);
 	int connect();
 	//no block. epoll et mode only suprt noBlock. default use;
 	int setNoBlock();
-
+	int setNoBlock(int fd);
+	int setNagle(int val);
 	int setOpt(int opt_id, int opt_val , int& opt_ret);
 
 	int getFD() const;
