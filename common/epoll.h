@@ -8,7 +8,7 @@
 #define CEPOLL_H
 
 #include "global.h"
-
+#include "define.h"
 struct epoll_event;
 class CEpoll
 {
@@ -17,14 +17,14 @@ public:
 	~CEpoll();
 	
 public:
-	int create(int listenCount);
+	int create(int listenCount = DEFAULT_LISTEN_NUM);
 
 	int listen(struct epoll_event* wait_events, int event_max_cnt, int timeout  = -1);
 
-	int add_new_client(int fd, struct epoll_event& ev);
+	int addListen(int fd, struct epoll_event& ev);
 
 	
-	int removeListenter(int fd);
+	int removeListen(int fd);
 
 private:
 	CEpoll(const CEpoll&);
@@ -32,7 +32,6 @@ private:
 	
 private:
     int m_fd;
-
 };
 
 #endif

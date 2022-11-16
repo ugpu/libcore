@@ -20,6 +20,12 @@ CEpoll::~CEpoll()
 	}
 }
 
+int CEpoll::create(int listenCount)
+{
+    m_fd = ::epoll_create(listenCount);
+	return m_fd;
+}
+
 
 int CEpoll::listen(struct epoll_event* wait_events, int event_max_cnt, int timeout /* = -1*/)
 {	
@@ -32,7 +38,7 @@ int CEpoll::listen(struct epoll_event* wait_events, int event_max_cnt, int timeo
 }
 
 
-int CEpoll::add_new_client(int fd, struct epoll_event& ev)
+int CEpoll::addListen(int fd, struct epoll_event& ev)
 {
     if (::epoll_ctl(m_fd, EPOLL_CTL_ADD, fd, &ev) == -1)
 	{	
@@ -42,7 +48,7 @@ int CEpoll::add_new_client(int fd, struct epoll_event& ev)
 	return 0;
 }
 
-int CEpoll::removeListenter(int fd)
+int CEpoll::removeListen(int fd)
 {
 	struct epoll_event ev;
     ev.events = 0;

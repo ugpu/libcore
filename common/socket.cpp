@@ -21,18 +21,18 @@ CSocket::~CSocket()
 }
 
 
-int CSocket::setOpt(int opt_val , int& opt_ret)
+int CSocket::setOpt(int opt_id , int opt_val , int& opt_ret)
 {
 	if(m_fd < 1)
 	{
 		return -1;
 	}
 
-	setsockopt(m_fd, SOL_SOCKET, opt_val, &opt_ret, sizeof(int));
+	setsockopt(m_fd, opt_id, opt_val, &opt_ret, sizeof(int));
 	return 0;
 }
 
-int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */)
+int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */, bool is_reuseaddr /* = true */, bool is_nagale /* = false */)
 {
 	if(!ip)
 	{
@@ -55,12 +55,42 @@ int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */)
 		return -1;
 	}
 
-	int val = 1;
-	this->setOpt(SO_REUSEADDR , val);
+	if(is_reuseaddr)
+	{
+		int val = 1;
+		int op_id = SOL_SOCKET;
+		this->setOpt(op_id, SO_REUSEADDR , val);
+	}
+
+	if(!is_nagale)
+	{
+		int val = 1;
+		int op_id = IPPROTO_TCP;
+		this->setOpt(op_id, TCP_NODELAY, val);
+	}
+
+	this->setNoBlock();
 	
+	this->bind();
+
+	this->listen(DEFAULT_LISTEN_NUM);
+
 	return 0;
 }
 
+
+int CSocket::accept(int & _fd)
+{
+	struct sockaddr_in client_addr;
+	int nLen = sizeof(peerAddr);
+	memset(&peerAddr, 0, nLen);
+	fd = ::accept(m_fd, (struct sockaddr*)&client_addr, &nLen);
+	if(fd < 0 )
+	{
+		return -1;
+	}
+	return 0;
+}
 
 int CSocket::bind()
 {
@@ -84,7 +114,8 @@ int CSocket::bind()
 	return 0;
 }
 
-int CSocket::listen(int num)
+
+int CSocket::listen(int num /* = DEFAULT_LISTEN_NUM */)
 {
 	if (num < 1) return -1;
 	
@@ -111,15 +142,23 @@ int CSocket::connect()
 }
 
 
-int CSocket::setNoBlock(int fd /*=  -1 */)
+int CSocket::setNoBlock()
 {
-	if(fd == -1)
-	{
-		fd = m_fd;
-	}
-	int flag = fcntl(fd, F_GETFL, 0);
-	return fcntl(fd, F_SETFL, flag | O_NONBLOCK);
+	int flag = fcntl(m_fd, F_GETFL, 0);
+	return fcntl(m_fd, F_SETFL, flag | O_NONBLOCK);
 }
+
+int CSocket::setNagle(int val)
+{
+	if (setsockopt(m_fd, IPPROTO_TCP, TCP_NODELAY, &val, sizeof(val)) == -1)
+	{
+		ReleaseErrorLog("set nagle, value = %d, error = %d, info = %s", val, errno, strerror(errno));
+		return SetNagleFailed;
+	}
+	
+	return Success;
+}
+
 
 int CSocket::getFD() const
 {
