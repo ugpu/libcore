@@ -15,19 +15,23 @@
 class ConnectMgr
 {
 public:
+	ConnectMgr();
 	ConnectMgr(const char* ip, const int port);
 	~ConnectMgr();
 
 public:
-	int start();
+	int init_con();
 
-	int run();
+	int work();
 
 	bool is_run();
 
-protected:
-	ConnectMgr();
+	void set_port(const int port);
+	void set_ip(const char * ip);
 
+	virtual int recv_data(int _fd, char* pData, int len) {};
+
+	virtual int send_data(int _fd, char* pData, int len) {}
 private:
 	bool      m_work;
 	CSocket   m_socket;
@@ -39,6 +43,8 @@ private:
 
 	struct  epoll_event   m_epoll_event;
 	struct  epoll_event   m_events[MAX_LISTEN_EVENT_CNT];
+
+	char      m_recv_buff[PACKAGE_MAX_SIZE];
 };
 
 #endif

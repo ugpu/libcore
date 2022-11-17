@@ -19,12 +19,12 @@ public:
 public:
 	//init socker
 	//type: SOCK_STREAM&SOCK_DGRAM
-	int init(const char* ip, int port, int type = SOCK_STREAM, bool is_reuseaddr = true, bool is_nagale = false);
+	int init(const char* ip = "", int port = -1, int type = SOCK_STREAM, bool is_reuseaddr = true, bool is_nagale = false);
 
 	int bind();
 	int accept(int & _fd);
 	int listen(int num = DEFAULT_LISTEN_NUM);
-	int connect();
+	int connect(char* ip, int port);
 	//no block. epoll et mode only suprt noBlock. default use;
 	int setNoBlock();
 	int setNoBlock(int fd);
@@ -34,6 +34,10 @@ public:
 	int getFD() const;
 	char* getIP();
 	int getPort();
+
+public:
+	int send(const char* pData, int len);
+	int recv(char* pRecvDataBuff, int buffLen);
 
 
 private:

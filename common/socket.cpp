@@ -32,21 +32,14 @@ int CSocket::setOpt(int opt_id , int opt_val , int& opt_ret)
 	return 0;
 }
 
-int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */, bool is_reuseaddr /* = true */, bool is_nagale /* = false */)
+int CSocket::init(const char* ip /* = '\0'*/, int port /* = -1 */, int type /* = SOCK_STREAM */, bool is_reuseaddr /* = true */, bool is_nagale /* = false */)
 {
-	if(!ip)
-	{
-		return -1;
-	}
-	if(port < 1)
-	{
-		return -1;
-	}
-
 	m_sType = type;
 	m_port  = port;
-	strcat(m_ip, ip);
-
+	if(ip != "")
+	{
+		strcat(m_ip, ip);
+	}
 
 	m_fd = socket(AF_INET, m_sType, 0);
 	if (m_fd == -1)
@@ -69,12 +62,6 @@ int CSocket::init(const char* ip, int port, int type /* = SOCK_STREAM */, bool i
 		this->setOpt(op_id, TCP_NODELAY, val);
 	}
 
-	this->setNoBlock();
-	
-	this->bind();
-
-	this->listen(DEFAULT_LISTEN_NUM);
-
 	return 0;
 }
 
@@ -94,13 +81,23 @@ int CSocket::accept(int & _fd)
 
 int CSocket::bind()
 {
-	if (m_fd < 0) return -1;
-	if (m_ip[0] == '\0' || m_port < 1) return -1;
+	if (m_fd < 0)
+	{
+		ERROR_LOG("Csocket bind failed!  socker not init!");
+		return -1;
+	}
+	if (m_ip[0] == '\0')
+	{
+		strcpy(m_ip, "127.0.0.1");
+	}
 
 	struct sockaddr_in _addr;
 	memset(&_addr, 0, sizeof(_addr));
 	_addr.sin_family = AF_INET;
-	_addr.sin_port = htons(m_port);
+	if(m_port > 0) 
+	{
+		_addr.sin_port = htons(m_port);
+	}
 	if (inet_aton(m_ip, &_addr.sin_addr) == 0)
 	{
 		return -2;
@@ -127,14 +124,16 @@ int CSocket::listen(int num /* = DEFAULT_LISTEN_NUM */)
 	return 0;
 }
 
-int CSocket::connect()
+int CSocket::connect(char* ip, int port)
 {
 	struct sockaddr_in clientAddr;
 	memset(&clientAddr, 0, sizeof(clientAddr));
 	clientAddr.sin_family = AF_INET;
-	clientAddr.sin_port = htons(m_port);
+	clientAddr.sin_port = htons(port);
+	inet_aton(ip, &clientAddr.sin_addr);
 	if (::connect(m_fd, (struct sockaddr*)&clientAddr, sizeof(clientAddr)) == -1)
 	{
+		ERROR_LOG("connect failed! err = %d", errno);
 		return -1;
 	}
 	
@@ -178,4 +177,15 @@ char* CSocket::getIP()
 int CSocket::getPort()
 {
 	return (int)m_port;
+}
+
+
+int CSocket::send(const char* pData, int len)
+{
+	return ::send(m_fd, pData, len, 0);
+}
+
+int CSocket::recv(char* pRecvDataBuff, int buffLen)
+{
+	return ::recv(m_fd, pRecvDataBuff, buffLen, 0);
 }
