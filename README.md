@@ -4,9 +4,14 @@
 
 # server_frame
  base lib for linux
- ----
- ---
- ### chinese:
+ 
+ how to run ?
+     --cd test
+     --make
+     --cd ../bin
+     --./test
+    
+ ### 中文:
   一个极简的基础库 包含了 日志 线程 锁 内存池
   没有互相依赖 仅仅简单使用
   持续性优化中.......
