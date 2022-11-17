@@ -6,12 +6,12 @@
  base lib for linux
  
  how to run ?
-     ...c
+   
      cd test <br/>
      make
      cd ../bin
      ./test
-     ...
+    
  ### 中文:
   一个极简的基础库 包含了 日志 线程 锁 内存池
   没有互相依赖 仅仅简单使用
