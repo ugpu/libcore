@@ -32,6 +32,8 @@ int ConnectMgr::start()
     m_socket.init(m_ip, m_port);
 
     m_epoll.create();
+
+    INFO_LOG("start listen host=%s port:%d", m_ip, m_port);
 }
 
 int ConnectMgr::run()
@@ -82,6 +84,7 @@ int ConnectMgr::run()
             else if(m_events[idx].events & EPOLLOUT)
             {
                 //send data
+                DEBUG_LOG("send data!");
             }
 		}
     }

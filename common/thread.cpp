@@ -59,8 +59,13 @@ void* CThread::call_func_run(void* pObj)
     return pThread;
 }
 
+pthread_t CThread::getTID()
+{
+	return m_pId;
+}
+
 int CThread::start()
-{	
+	{
 	DEBUG_LOG("thread start!!!!!");
 	int ret = pthread_create(&m_pId, NULL, call_func_run, (void*)this);
 	if (ret != 0)

@@ -174,6 +174,7 @@ int CLog::writeFile(int logLevel, const char* pFormat, ...)
 
 	logLen += headLen;
 	_logBuff[logLen] = '\n';
+	_logBuff[logLen + 1] = '\0';
     logLen = write(m_fd, _logBuff, logLen + 1);
 	printf("%s", _logBuff);
 	m_curSize += logLen;

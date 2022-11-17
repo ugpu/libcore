@@ -33,7 +33,7 @@ public:
     virtual int run();
     
     //get thread_id
-    pthread_t getId();
+    pthread_t getTID();
 private:
     // disable copy and opearator
     CThread(const CThread&);

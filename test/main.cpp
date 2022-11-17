@@ -13,13 +13,28 @@ std::string rand_str(const int len)
     return str;
 }
 
+class CTestThread : public CThread {
+public:
+    CTestThread() {};
+    ~CTestThread() {};
+
+    virtual int run(){
+        while(true)
+        {
+            for(int i = 0 ; i< 10000; ++i)
+            {
+                for(int m = 0 ; m < 1000; ++m) float a = ((rand() % 100) + 1) / (rand() % 100 + 1) % (rand() % 100 + 1);
+            }
+            sleep(0);
+        }
+    }
+};
+
 
 int main(int argc, char **argv)
 {   
     
     INFO_LOG("#########   test start  #####");
-    INFO_LOG("");
-    INFO_LOG("");
     INFO_LOG("");
     std::string str = rand_str(512);
     
@@ -32,17 +47,15 @@ int main(int argc, char **argv)
     }
 
     void* pStatus;
-    CThread* pThread = new CThread();
+    CTestThread* pThread = new CTestThread();
     pThread->start();
-    pThread->join(0, &pStatus);
-
-    INFO_LOG("");
-    INFO_LOG("");
-    INFO_LOG("");
-    INFO_LOG("#########   test end  #####");
+    //pThread->join(0, &pStatus);
 
     ConnectMgr a("127.0.0.1", 10091);
     a.start();
     a.run();
+
+    INFO_LOG("#########   test end  #####");
+
     return 0;
 }

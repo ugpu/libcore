@@ -27,6 +27,7 @@ public:
 
 protected:
 	ConnectMgr();
+
 private:
 	bool      m_work;
 	CSocket   m_socket;
