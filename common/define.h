@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-
 #define MAX_FILE_NAME_LEN (255)
 #define MAX_FULL_PATH_LEN (4096)
 #define MAX_LOG_FILE_NUMS (100)
@@ -31,7 +30,6 @@
 
 #define LOG_FILE_NAME ("log.log")
 #define LOG_FILE_PATH ("../log")
-
 
 #define SVR_CONN_MAX_LISTEN_NUM (1024 * 10)
 #define SVR_CONN_MAX_MSG_NUM (1024 * 10)
