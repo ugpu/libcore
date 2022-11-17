@@ -7,7 +7,7 @@
  
  how to run ?
    
-     cd test <br/>
+     cd test 
      make
      cd ../bin
      ./test
