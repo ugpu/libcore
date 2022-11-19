@@ -26,6 +26,7 @@ public:
 	
 	int removeListen(int fd);
 
+	int close();
 private:
 	CEpoll(const CEpoll&);
 	CEpoll& operator =(const CEpoll&);

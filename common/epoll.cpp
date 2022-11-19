@@ -10,7 +10,13 @@ CEpoll::CEpoll()
 
 CEpoll::~CEpoll()
 {
-		if (m_fd != -1)
+	close();
+}
+
+
+int CEpoll::close()
+{
+	if (m_fd != -1)
 	{
 		if (::close(m_fd) != 0)
 		{

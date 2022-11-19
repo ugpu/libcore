@@ -11,7 +11,7 @@
 #include "socket.h"
 #include "define.h"
 #include "epoll.h"
-
+#include <map>
 class ConnectMgr
 {
 public:
@@ -29,9 +29,13 @@ public:
 	void set_port(const int port);
 	void set_ip(const char * ip);
 
-	virtual int recv_data(int _fd, char* pData, int len) {};
+	void close();
 
-	virtual int send_data(int _fd, char* pData, int len) {}
+	virtual int new_accept(int _fd, const char* ip);
+
+	virtual int recv_data(int _fd, char* pData, int len);
+
+	virtual int send_data(int _fd, char* pData, int len);
 private:
 	bool      m_work;
 	CSocket   m_socket;
@@ -45,6 +49,10 @@ private:
 	struct  epoll_event   m_events[MAX_LISTEN_EVENT_CNT];
 
 	char      m_recv_buff[PACKAGE_MAX_SIZE];
+
+	std::map <int, int> m_connected_map;
+
+	int       m_conflag;
 };
 
 #endif

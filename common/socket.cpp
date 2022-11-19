@@ -11,6 +11,11 @@ CSocket::CSocket()
 
 CSocket::~CSocket()
 {
+	close();
+}
+
+void CSocket::close()
+{
 	if(m_fd > 0)
 	{
 		::close(m_fd);
@@ -19,7 +24,6 @@ CSocket::~CSocket()
 	m_port = -1;
 	m_fd = -1;
 }
-
 
 int CSocket::setOpt(int opt_id , int opt_val , int& opt_ret)
 {
@@ -66,9 +70,8 @@ int CSocket::init(const char* ip /* = '\0'*/, int port /* = -1 */, int type /* =
 }
 
 
-int CSocket::accept(int & _fd)
+int CSocket::accept(int & _fd, struct sockaddr_in & client_addr)
 {
-	struct sockaddr_in client_addr;
 	socklen_t nLen = sizeof(client_addr);
 	memset(&client_addr, 0, nLen);
 	_fd = ::accept(m_fd, (struct sockaddr*)&client_addr, &nLen);
@@ -76,7 +79,7 @@ int CSocket::accept(int & _fd)
 	{
 		return -1;
 	}
-	return 0;
+	return _fd;
 }
 
 int CSocket::bind()
@@ -88,7 +91,7 @@ int CSocket::bind()
 	}
 	if (m_ip[0] == '\0')
 	{
-		strcpy(m_ip, "127.0.0.1");
+		strcpy(m_ip, INADDR_ANY);
 	}
 
 	struct sockaddr_in _addr;
@@ -100,11 +103,13 @@ int CSocket::bind()
 	}
 	if (inet_aton(m_ip, &_addr.sin_addr) == 0)
 	{
+		ERROR_LOG("socket bind falied!");
 		return -2;
 	}
 	
 	if (::bind(m_fd, (struct sockaddr*)&_addr, sizeof(_addr)) == -1)
 	{
+		ERROR_LOG("socket bind falied!");
 		return -3;
 	}
 	
@@ -124,14 +129,14 @@ int CSocket::listen(int num /* = DEFAULT_LISTEN_NUM */)
 	return 0;
 }
 
-int CSocket::connect(char* ip, int port)
+int CSocket::connect(const char* ip, int port)
 {
-	struct sockaddr_in clientAddr;
-	memset(&clientAddr, 0, sizeof(clientAddr));
-	clientAddr.sin_family = AF_INET;
-	clientAddr.sin_port = htons(port);
-	inet_aton(ip, &clientAddr.sin_addr);
-	if (::connect(m_fd, (struct sockaddr*)&clientAddr, sizeof(clientAddr)) == -1)
+	struct sockaddr_in server_info;
+	memset(&server_info, 0, sizeof(server_info));
+	server_info.sin_family = AF_INET;
+	server_info.sin_port = htons(port);
+	inet_aton(ip, &server_info.sin_addr);
+	if (::connect(m_fd, (struct sockaddr*)&server_info, sizeof(server_info)) == -1)
 	{
 		ERROR_LOG("connect failed! err = %d", errno);
 		return -1;

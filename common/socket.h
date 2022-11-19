@@ -22,9 +22,9 @@ public:
 	int init(const char* ip = "", int port = -1, int type = SOCK_STREAM, bool is_reuseaddr = true, bool is_nagale = false);
 
 	int bind();
-	int accept(int & _fd);
+	int accept(int & _fd, struct sockaddr_in & client_addr);
 	int listen(int num = DEFAULT_LISTEN_NUM);
-	int connect(char* ip, int port);
+	int connect(const char* ip, int port);
 	//no block. epoll et mode only suprt noBlock. default use;
 	int setNoBlock();
 	int setNoBlock(int fd);
@@ -35,6 +35,7 @@ public:
 	char* getIP();
 	int getPort();
 
+	void close();
 public:
 	int send(const char* pData, int len);
 	int recv(char* pRecvDataBuff, int buffLen);

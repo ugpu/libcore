@@ -66,7 +66,6 @@ pthread_t CThread::getTID()
 
 int CThread::start()
 {
-	DEBUG_LOG("thread start!!!!!");
 	int ret = pthread_create(&m_pId, NULL, call_func_run, (void*)this);
 	if (ret != 0)
 	{
@@ -77,6 +76,5 @@ int CThread::start()
 
 int CThread::run()
 {
-    INFO_LOG(" thread_id =%d start run!", m_pId);
     return 0;
 }

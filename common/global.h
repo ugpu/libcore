@@ -40,4 +40,48 @@ enum LogLevel {
 #define WARN_LOG(fmt,  args...)  CLog::inputFile()->writeFile(LogLevel::warn, fmt, ##args)
 #define INFO_LOG(fmt,  args...)  CLog::inputFile()->writeFile(LogLevel::info, fmt, ##args)
 
+
+
+
+
+struct net_msg_buff {
+    int len;
+    char buff[PACKAGE_MAX_SIZE];
+    
+    net_msg_buff()
+    {
+        len = 0;
+        memset(this, 0, sizeof(net_msg_buff));
+    }
+
+    void clear()
+    {
+        len = 0;
+        memset(this, 0, sizeof(net_msg_buff));
+    }
+
+    bool add_data(const char* pData, int n)
+    {
+        if(n + len >= PACKAGE_MAX_SIZE) return false;
+        memcpy(buff + len, pData, n);
+        len += n;
+        return true;
+    }
+
+    int pack(char* pBuff, int buffLen)
+    {
+		if(buffLen <= len) return false;
+		memcpy(pBuff, (void*)(&len), sizeof(len));
+		memcpy(pBuff + sizeof(len), buff, len);
+        return (sizeof(len) + len);
+    }
+
+    void unpack(char* data)
+    {
+        len = *(int*)data;
+        memcpy(buff, data + sizeof(int), len);
+    }
+};
+
+
 #endif
