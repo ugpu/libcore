@@ -103,9 +103,9 @@ int main(int argc, char **argv)
     CServer a;
     a.init_svr();
     a.start();
+    sleep(1);
 
-    sleep(3);
-
+    INFO_LOG("start 4096 client connect svr!");
     //gen 4096 connect
     for(int i = 0 ; i < 4096; i++)
     {
