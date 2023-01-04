@@ -31,10 +31,10 @@ public:
 
 	static CLog* inputFile();
 public:
-	int writeFile(int logLevel, const char* pFormat, ...);
+	int writeFile(const char* fileName, const int fileLine, int logLevel, const char* pFormat, ...);
 	int getBuffSize();
 protected:
-	int genFileHead(struct tm* pTm, const struct timeval& tv, int logLevel);
+	int genFileHead(struct tm* pTm, const struct timeval& tv, int logLevel, const char* fileName, const int fileLine);
 	bool createFile();
 	bool checkFileSize();
 	bool checkFileExiste();

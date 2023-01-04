@@ -130,10 +130,10 @@ bool CLog::createFile()
 	return false;
 }
 
-int CLog::genFileHead(struct tm* pTm, const struct timeval& tv, int logLevel)
+int CLog::genFileHead(struct tm* pTm, const struct timeval& tv, int logLevel, const char* fileName, const int fileLine)
 {
-	int nLen = snprintf(_logBuff, logBuffLen, "%d-%02d-%02d %02d:%02d:%02d.%03d %s: ", (pTm->tm_year + 1900), (pTm->tm_mon + 1), pTm->tm_mday,
-		    pTm->tm_hour, pTm->tm_min, pTm->tm_sec, (int)(tv.tv_usec / 1000), LogLevelStr[logLevel] ? LogLevelStr[logLevel] : "INFO");
+	int nLen = snprintf(_logBuff, logBuffLen, "%d-%02d-%02d %02d:%02d:%02d.%03d %s [%s:%d]: ", (pTm->tm_year + 1900), (pTm->tm_mon + 1), pTm->tm_mday,
+		    pTm->tm_hour, pTm->tm_min, pTm->tm_sec, (int)(tv.tv_usec / 1000), LogLevelStr[logLevel] ? LogLevelStr[logLevel] : "INFO", fileName, fileLine);
 
 	return nLen;
 }
@@ -149,7 +149,7 @@ CLog* CLog::inputFile()
 	return &g_log;
 }
 
-int CLog::writeFile(int logLevel, const char* pFormat, ...)
+int CLog::writeFile(const char* fileName, const int fileLine, int logLevel, const char* pFormat, ...)
 {
 	if(logLevel > m_logLevel)
 	{
@@ -166,7 +166,7 @@ int CLog::writeFile(int logLevel, const char* pFormat, ...)
 	gettimeofday(&tv, NULL);
 	struct tm* pTm = localtime(&tv.tv_sec);
 
-	int headLen = genFileHead(pTm, tv, logLevel);
+	int headLen = genFileHead(pTm, tv, logLevel, fileName, fileLine);
 	va_list valp;
 	va_start(valp, pFormat);
 	int logLen = vsnprintf(_logBuff + headLen, logBuffLen - headLen - 1, pFormat, valp);

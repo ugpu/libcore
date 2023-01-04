@@ -33,12 +33,19 @@ enum LogLevel {
 	debug,
 };
 
+#ifndef __FILE__
+#define __FILE__ ""
+#endif
+
+#ifndef __LINE__
+#define __LINE__ 0
+#endif
 
 
-#define DEBUG_LOG(fmt, args...)  CLog::inputFile()->writeFile(LogLevel::debug, fmt, ##args)
-#define ERROR_LOG(fmt, args...)  CLog::inputFile()->writeFile(LogLevel::error, fmt, ##args)
-#define WARN_LOG(fmt,  args...)  CLog::inputFile()->writeFile(LogLevel::warn, fmt, ##args)
-#define INFO_LOG(fmt,  args...)  CLog::inputFile()->writeFile(LogLevel::info, fmt, ##args)
+#define DEBUG_LOG(fmt, args...)  CLog::inputFile()->writeFile(__FILE__, __LINE__, LogLevel::debug, fmt, ##args)
+#define ERROR_LOG(fmt, args...)  CLog::inputFile()->writeFile(__FILE__, __LINE__, LogLevel::error, fmt, ##args)
+#define WARN_LOG(fmt,  args...)  CLog::inputFile()->writeFile(__FILE__, __LINE__, LogLevel::warn, fmt, ##args)
+#define INFO_LOG(fmt,  args...)  CLog::inputFile()->writeFile(__FILE__, __LINE__, LogLevel::info, fmt, ##args)
 
 
 
