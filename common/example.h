@@ -41,4 +41,29 @@ int main()
     t2.join();
 }
 
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+int main()
+{
+    // Get the current time
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Do some work
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    // Get the current time again
+    auto end = std::chrono::high_resolution_clock::now();
+
+    // Calculate the elapsed time
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    std::cout << "Elapsed time: " << elapsed << " milliseconds\n";
+
+    return 0;
+}
+
+
+
 **/
